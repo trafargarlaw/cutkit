@@ -1,5 +1,6 @@
 import { Icons } from "@/components/icons";
 import { UserAuthForm } from "@/components/user-auth-form";
+import { Suspense } from "react";
 
 export default function HomePage() {
   return (
@@ -15,7 +16,9 @@ export default function HomePage() {
               Enter your email below to create your account
             </p>
           </div>
-          <UserAuthForm />
+          <Suspense>
+            <UserAuthForm />
+          </Suspense>
         </div>
       </div>
     </div>
