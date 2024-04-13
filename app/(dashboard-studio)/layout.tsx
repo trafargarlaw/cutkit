@@ -12,7 +12,7 @@ async function DashboardLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div>
+    <div className="flex h-[100dvh] flex-col bg-gray-100">
       <header className="sticky top-0 z-40 border-b bg-background">
         <div className="flex h-16 items-center justify-between px-4 py-4">
           <MainNav />

@@ -1,4 +1,14 @@
-import { type LucideProps, type LucideIcon, LoaderCircle } from "lucide-react";
+import {
+  type LucideProps,
+  type LucideIcon,
+  LoaderCircle,
+  SquarePlay,
+  Ellipsis,
+  Lightbulb,
+  Scroll,
+  AudioLines,
+  Images,
+} from "lucide-react";
 
 export type Icon = LucideIcon;
 
@@ -27,4 +37,40 @@ export const Icons = {
     </svg>
   ),
   spinner: LoaderCircle,
+  squarePlay: (props: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
+      <rect
+        width="24.07"
+        height="24.094"
+        x="3.93"
+        y="3.906"
+        stroke="#2488FE"
+        strokeWidth="2.667"
+        rx="6.667"
+      />
+      <path
+        stroke="#2488FE"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2.667"
+        d="M13.333 13.158c0-1.065 1.187-1.7 2.073-1.11l4.263 2.843a1.333 1.333 0 0 1 0 2.218l-4.263 2.842a1.333 1.333 0 0 1-2.073-1.11v-5.683Z"
+      />
+    </svg>
+  ),
+  ellipsis: Ellipsis,
+  lightBulb: Lightbulb,
+  scroll: Scroll,
+  hook: (props: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.333"
+        d="M10.667 6v4A3.333 3.333 0 1 1 4 10V7.333l2 2M10.667 6a1.333 1.333 0 1 1 0-2.667m0 2.667a1.333 1.333 0 0 0 0-2.667m0 0V2"
+      />
+    </svg>
+  ),
+  audio: AudioLines,
+  images: Images,
 };
