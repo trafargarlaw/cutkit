@@ -11,6 +11,7 @@ import {
   TabsTrigger,
 } from "../../components/ui/tabs";
 import SubjectTab from "./components/subject-tab";
+import ScriptTab from "./components/script-tab";
 
 type FormData = z.infer<typeof stepsValidationSchema>;
 export type StepsFormType = UseFormReturn<FormData>;
@@ -54,7 +55,9 @@ function StudioTabs() {
       </TabsContent>
       <TabsContent value="story"> story</TabsContent>
       <TabsContent value="hook"> hook</TabsContent>
-      <TabsContent value="script"> script</TabsContent>
+      <TabsContent value="script">
+        <ScriptTab form={stepsForm} />
+      </TabsContent>
       <TabsContent value="images"> images</TabsContent>
     </Tabs>
   );
