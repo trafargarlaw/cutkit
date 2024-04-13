@@ -1,11 +1,14 @@
 import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 
 function StudioPage() {
@@ -51,7 +54,24 @@ function StudioPage() {
                 Images
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="subject"> subject</TabsContent>
+            <TabsContent
+              className="rounded-xl bg-secondary p-4 text-secondary-foreground/70"
+              value="subject"
+            >
+              <h1 className="font-semibold">What&apos;s your video about?</h1>
+              <Textarea
+                className="mt-4 rounded-xl border-white/40 bg-transparent"
+                placeholder="describe what's your video about. You can discuss the subject with AI to have the best formulation of it."
+              />
+              <div className="mt-4 flex items-center justify-end gap-2">
+                <Button size="sm" variant="outline">
+                  Save
+                </Button>
+                <Button size="sm" variant="default">
+                  Confirm
+                </Button>
+              </div>
+            </TabsContent>
             <TabsContent value="story"> story</TabsContent>
             <TabsContent value="hook"> hook</TabsContent>
             <TabsContent value="script"> script</TabsContent>
