@@ -10,6 +10,7 @@ import {
 import SubjectTab from "./components/subject-tab";
 import ScriptTab from "./components/script-tab";
 import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
+import ScriptTab from "./components/script-tab";
 
 function StudioTabs() {
   const { watch, setValue } = useFormContext<StepsFormData>();
