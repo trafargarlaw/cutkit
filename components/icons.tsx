@@ -10,6 +10,8 @@ import {
   Images,
   ArrowUp,
   User,
+  Play,
+  ChevronDown,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -73,4 +75,6 @@ export const Icons = {
   audio: AudioLines,
   images: Images,
   user: User,
+  play: Play,
+  chevronDown: ChevronDown,
 };
