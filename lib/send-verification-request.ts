@@ -11,7 +11,7 @@ export const sendVerificationRequest = async (
 ) => {
   try {
     await resend.emails.send({
-      from: env.EMAIL_FROM,
+      from: "Cutkit <contact@houdaifa.me>",
       to: params.identifier,
       subject: "Sign in to CutKit",
       react: CutKitLinkEmail({
