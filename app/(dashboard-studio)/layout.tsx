@@ -3,7 +3,6 @@ import { UserAccountNav } from "@/components/user-account-nav";
 import { getCurrentUser } from "@/lib/session";
 import { notFound } from "next/navigation";
 import React from "react";
-import { AI } from "@/features/studio-chat/action";
 
 async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
