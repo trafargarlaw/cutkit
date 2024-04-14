@@ -9,8 +9,9 @@ import {
 } from "../../components/ui/tabs";
 import SubjectTab from "./components/subject-tab";
 import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
+import StoryTab from "./components/story-tab";
 
-function StudioTabs() {
+export function StudioTabs() {
   const { watch, setValue } = useFormContext<StepsFormData>();
   return (
     <Tabs
@@ -22,19 +23,19 @@ function StudioTabs() {
           <Icons.lightBulb className="mr-2 size-4" />
           Subject
         </TabsTrigger>
-        <TabsTrigger value="story">
+        <TabsTrigger value="story" disabled={!watch("subject")}>
           <Icons.scroll className="mr-2 size-4" />
           Story
         </TabsTrigger>
-        <TabsTrigger value="hook">
+        <TabsTrigger value="hook" disabled={!watch("story")}>
           <Icons.hook className="mr-2 size-4" />
           Hook
         </TabsTrigger>
-        <TabsTrigger value="script">
+        <TabsTrigger value="script" disabled={!watch("hook")}>
           <Icons.audio className="mr-2 size-4" />
           Script
         </TabsTrigger>
-        <TabsTrigger value="images">
+        <TabsTrigger value="images" disabled={!watch("hook")}>
           <Icons.images className="mr-2 size-4" />
           Images
         </TabsTrigger>
@@ -42,12 +43,12 @@ function StudioTabs() {
       <TabsContent value="subject">
         <SubjectTab />
       </TabsContent>
-      <TabsContent value="story"> story</TabsContent>
+      <TabsContent value="story">
+        <StoryTab />
+      </TabsContent>
       <TabsContent value="hook"> hook</TabsContent>
       <TabsContent value="script"> script</TabsContent>
       <TabsContent value="images"> images</TabsContent>
     </Tabs>
   );
 }
-
-export default StudioTabs;

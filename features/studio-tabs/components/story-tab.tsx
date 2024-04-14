@@ -8,7 +8,7 @@ function StoryTab() {
   const { register, watch, setValue } = useFormContext<StepsFormData>();
 
   const [isEditing, setIsEditing] = useState(() =>
-    !watch("subject") ? true : false,
+    !watch("story") ? true : false,
   );
 
   function toggleEditing() {
@@ -21,29 +21,29 @@ function StoryTab() {
 
   return (
     <div className="rounded-xl bg-secondary p-4 text-secondary-foreground/70">
-      <h1 className="font-semibold">What&apos;s your video about?</h1>
+      <h1 className="font-semibold">Now let’s work on the story!</h1>
       {isEditing ? (
         <Textarea
           className="mt-4 rounded-xl border-white/40 bg-transparent"
-          placeholder="describe what's your video about. You can discuss the subject with AI to have the best formulation of it."
-          {...register("subject")}
+          placeholder="Write your video’s story or ask the Ai to help you make one."
+          {...register("story")}
         />
       ) : (
-        <div className="mt-4">{watch("subject")}</div>
+        <div className="mt-4">{watch("story")}</div>
       )}
       <div className="mt-4 flex items-center justify-end gap-2">
         <Button
           size="sm"
           variant="outline"
           onClick={toggleEditing}
-          disabled={!watch("subject")}
+          disabled={!watch("story")}
         >
           {isEditing ? "Save" : "Edit"}
         </Button>
         <Button
           size="sm"
           variant="default"
-          disabled={!watch("subject")}
+          disabled={!watch("story") || !watch("subject")}
           onClick={handleConfirm}
         >
           Confirm
