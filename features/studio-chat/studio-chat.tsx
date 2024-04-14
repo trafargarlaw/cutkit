@@ -3,7 +3,7 @@ import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { useActions, useUIState } from "ai/rsc";
 import { useState } from "react";
-import type { AI } from "./action";
+import type { AI } from "./actions/action";
 import { UserMessage } from "./components/message";
 
 function StudioChat() {

@@ -1,3 +1,6 @@
-export * from "./studio-chat";
-export * from "./action";
-export * from "./components";
+export * from "./actions";
+
+import * as StudioChat from "./studio-chat";
+import * as Components from "./components";
+
+export { StudioChat, Components };

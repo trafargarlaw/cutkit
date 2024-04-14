@@ -6,8 +6,8 @@ import {
 } from "ai/rsc";
 import { OpenAI } from "openai";
 import { z } from "zod";
-import { BotMessage } from "./components";
-import SummaryCard from "./components/summary-card";
+import { BotMessage } from "../components";
+import SummaryCard from "../components/summary-card";
 
 type AIStateItem =
   | {
