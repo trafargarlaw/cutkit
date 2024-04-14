@@ -12,6 +12,8 @@ import {
   User,
   Play,
   ChevronDown,
+  ArrowUp,
+  User,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -77,4 +79,5 @@ export const Icons = {
   user: User,
   play: Play,
   chevronDown: ChevronDown,
+  user: User,
 };
