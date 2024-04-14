@@ -6,8 +6,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import StudioChat from "@/features/studio-chat/studio-chat";
-import StudioTabs from "@/features/studio-tabs/studio-tabs";
+import { StudioChat } from "@/features/studio-chat";
+import { StudioTabs } from "@/features/studio-tabs";
+
 import { stepsValidationSchema } from "@/lib/validation/steps";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type UseFormReturn, useForm, FormProvider } from "react-hook-form";
@@ -25,7 +26,7 @@ function StudioPage() {
   });
   return (
     <FormProvider {...methods}>
-      <main className="grid h-full grid-cols-2 gap-4 p-4">
+      <main className="grid h-full grid-cols-2 gap-4 overflow-y-auto p-4">
         <div className="rounded-xl bg-white p-4">
           <div className="flex items-center gap-2 font-semibold">
             <Icons.squarePlay className="size-8 text-primary" />
@@ -46,7 +47,7 @@ function StudioPage() {
             <StudioTabs />
           </div>
         </div>
-        <div className="rounded-xl bg-white p-4">
+        <div className="overflow-y-auto rounded-xl bg-white p-4">
           <StudioChat />
         </div>
       </main>

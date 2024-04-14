@@ -1,11 +1,20 @@
 import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useChat } from "ai/react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 function SubjectTab() {
-  const { register, watch, setValue } = useFormContext<StepsFormData>();
+  const { register, watch, setValue, getValues } =
+    useFormContext<StepsFormData>();
+  const { append } = useChat({
+    id: "story",
+    api: "/api/story/chat",
+    body: {
+      data: getValues(),
+    },
+  });
 
   const [isEditing, setIsEditing] = useState(() =>
     !watch("subject") ? true : false,
@@ -15,8 +24,13 @@ function SubjectTab() {
     setIsEditing((prev) => !prev);
   }
 
-  function handleConfirm() {
+  async function handleConfirm() {
     setValue("selectedTab", "story");
+    await append({
+      id: "1",
+      content: "Generate a first story draft with our chosen subject.",
+      role: "user",
+    });
   }
 
   return (

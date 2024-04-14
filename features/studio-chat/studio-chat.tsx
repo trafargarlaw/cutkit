@@ -1,45 +1,103 @@
 "use client";
+import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
-import { useActions, useUIState } from "ai/rsc";
-import { useState } from "react";
-import type { AI } from "./actions/action";
-import { UserMessage } from "./components/message";
+import type { Message } from "ai";
+import { useChat } from "ai/react";
+import Markdown from "markdown-to-jsx";
+import React from "react";
+import { useFormContext } from "react-hook-form";
 
-function StudioChat() {
-  const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useUIState<typeof AI>();
-  const { submitUserMessage } = useActions<typeof AI>();
+import { SuggestionCard, BotMessage, UserMessage } from "./components";
+
+function getInitialMessagesFromTab(tab: string) {
+  switch (tab) {
+    case "subject":
+      return [
+        {
+          id: "1",
+          content:
+            "Hello, Let's formulate your video subject. What's your video about?",
+          role: "assistant",
+        },
+      ] satisfies Message[];
+    case "story":
+      return [
+        {
+          id: "1",
+          content: "Let's now craft the story of your video.",
+          role: "assistant",
+        },
+      ] satisfies Message[];
+    case "hook":
+      return undefined;
+    case "script":
+      return undefined;
+    case "images":
+      return undefined;
+    default:
+      return undefined;
+  }
+}
+
+export function StudioChat() {
+  const form = useFormContext<StepsFormData>();
+
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    id: form.watch("selectedTab"),
+    api: `/api/${form.watch("selectedTab")}/chat`,
+    body: {
+      data: form.getValues(),
+    },
+    initialMessages: getInitialMessagesFromTab(form.watch("selectedTab")),
+  });
+
+  const processSuggestionContent = (content: string) => {
+    const suggestionContent = content.match(/<<suggestion:(.*?)>>/s)?.[1];
+    if (!suggestionContent) return content.replace("<<suggestion:", "");
+
+    const formattedDraftContent = suggestionContent;
+    const tab = form.watch("selectedTab");
+
+    return content.replace(
+      /<<suggestion:(.*?)>>/s,
+      `<Suggestion text="${formattedDraftContent}" tab="${tab}" />`,
+    );
+  };
 
   return (
     <div className="flex h-full flex-col gap-4">
-      <div className="flex flex-1 flex-col gap-4 rounded-xl bg-slate-100 p-4">
-        {messages.map((message) => {
-          return <div key={message.id}>{message.display}</div>;
-        })}
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto rounded-xl bg-slate-100 p-4">
+        {messages.map((m) => (
+          <div key={m.id}>
+            {m.role === "user" ? (
+              <UserMessage>{m.content}</UserMessage>
+            ) : (
+              <BotMessage>
+                <Markdown
+                  options={{
+                    overrides: {
+                      Suggestion: {
+                        component: SuggestionCard,
+                      },
+                    },
+                    createElement(type, props, children) {
+                      return (
+                        <div className="prose">
+                          {React.createElement(type, props, children)}
+                        </div>
+                      );
+                    },
+                  }}
+                >
+                  {processSuggestionContent(m.content)}
+                </Markdown>
+              </BotMessage>
+            )}
+          </div>
+        ))}
       </div>
-      <form
-        className="relative"
-        onSubmit={async (e) => {
-          e.preventDefault();
-
-          setMessages((currentMessages) => [
-            ...currentMessages,
-            {
-              id: Date.now(),
-              display: <UserMessage>{inputValue}</UserMessage>,
-            },
-          ]);
-
-          const responseMessage = await submitUserMessage(inputValue);
-          setMessages((currentMessages) => [
-            ...currentMessages,
-            responseMessage,
-          ]);
-
-          setInputValue("");
-        }}
-      >
+      <form onSubmit={handleSubmit} className="relative">
         <button
           type="submit"
           className="absolute right-1 top-1 grid size-9 place-items-center rounded-full bg-secondary text-secondary-foreground"
@@ -47,10 +105,8 @@ function StudioChat() {
           <Icons.arrowUp className="size-6 " />
         </button>
         <Input
-          value={inputValue}
-          onChange={(event) => {
-            setInputValue(event.target.value);
-          }}
+          value={input}
+          onChange={handleInputChange}
           className="h-12 rounded-full pr-12"
           placeholder="Type a message"
         />
@@ -58,5 +114,3 @@ function StudioChat() {
     </div>
   );
 }
-
-export default StudioChat;
