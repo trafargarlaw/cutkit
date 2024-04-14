@@ -1,5 +1,6 @@
 import { Icons } from "@/components/icons";
 import { UserAuthForm } from "@/components/user-auth-form";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export default function HomePage() {
@@ -8,7 +9,12 @@ export default function HomePage() {
       <div className="lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
-            <Icons.logo className="mx-auto size-10" />
+            <Link
+              href="/"
+              className="items-center space-x-2 rounded-lg bg-secondary p-2"
+            >
+              <Icons.logo className=" size-5" />
+            </Link>
             <h1 className="text-2xl font-semibold tracking-tight">
               Create an account
             </h1>

@@ -1,8 +1,5 @@
 "use client";
-import { stepsValidationSchema } from "@/lib/validation/steps";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, type UseFormReturn } from "react-hook-form";
-import type { z } from "zod";
+import { useFormContext } from "react-hook-form";
 import { Icons } from "../../components/icons";
 import {
   Tabs,
@@ -11,21 +8,14 @@ import {
   TabsTrigger,
 } from "../../components/ui/tabs";
 import SubjectTab from "./components/subject-tab";
+import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 
-type FormData = z.infer<typeof stepsValidationSchema>;
-export type StepsFormType = UseFormReturn<FormData>;
 function StudioTabs() {
-  const stepsForm = useForm<FormData>({
-    resolver: zodResolver(stepsValidationSchema),
-    defaultValues: {
-      selectedTab: "subject",
-    },
-  });
-
+  const { watch, setValue } = useFormContext<StepsFormData>();
   return (
     <Tabs
-      value={stepsForm.watch("selectedTab")}
-      onValueChange={(value) => stepsForm.setValue("selectedTab", value)}
+      value={watch("selectedTab")}
+      onValueChange={(value) => setValue("selectedTab", value)}
     >
       <TabsList>
         <TabsTrigger value="subject">
@@ -50,7 +40,7 @@ function StudioTabs() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="subject">
-        <SubjectTab form={stepsForm} />
+        <SubjectTab />
       </TabsContent>
       <TabsContent value="story"> story</TabsContent>
       <TabsContent value="hook"> hook</TabsContent>

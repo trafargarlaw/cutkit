@@ -1,14 +1,12 @@
+import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { type StepsFormType } from "../studio-tabs";
 import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
-type SubjectTabProps = {
-  form: StepsFormType;
-};
+function SubjectTab() {
+  const { register, watch, setValue } = useFormContext<StepsFormData>();
 
-function SubjectTab({ form }: SubjectTabProps) {
-  const { register, watch } = form;
   const [isEditing, setIsEditing] = useState(() =>
     !watch("subject") ? true : false,
   );
@@ -18,7 +16,7 @@ function SubjectTab({ form }: SubjectTabProps) {
   }
 
   function handleConfirm() {
-    form.setValue("selectedTab", "story");
+    setValue("selectedTab", "story");
   }
 
   return (
