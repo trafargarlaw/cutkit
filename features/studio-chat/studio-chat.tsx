@@ -25,12 +25,18 @@ function getInitialMessagesFromTab(tab: string) {
       return [
         {
           id: "1",
-          content: "Let's now craft the story of your video.",
+          content: "Let's now craft the story of your video!",
           role: "assistant",
         },
       ] satisfies Message[];
     case "hook":
-      return undefined;
+      return [
+        {
+          id: "1",
+          content: "Now, a catchy hook for your video!",
+          role: "assistant",
+        },
+      ] satisfies Message[];
     case "script":
       return undefined;
     case "images":
@@ -56,14 +62,13 @@ export function StudioChat() {
     const suggestionContent = content.match(/<<suggestion:(.*?)>>/s)?.[1];
     if (!suggestionContent) return content.replace("<<suggestion:", "");
 
-    const formattedDraftContent = suggestionContent;
     const tab = form.watch("selectedTab");
 
-    return content.replace(
-      /<<suggestion:(.*?)>>/s,
-      `<Suggestion text="${formattedDraftContent}" tab="${tab}" />`,
-    );
+    return content.replace(/<<suggestion:(.*?)>>/gs, (_, suggestionContent) => {
+      return `<Suggestion text="${suggestionContent}" tab="${tab}" />`;
+    });
   };
+  console.log(messages);
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -83,7 +88,7 @@ export function StudioChat() {
                     },
                     createElement(type, props, children) {
                       return (
-                        <div className="prose">
+                        <div className="prose mb-2">
                           {React.createElement(type, props, children)}
                         </div>
                       );

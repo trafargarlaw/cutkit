@@ -25,7 +25,7 @@ export function BotMessage({ children }: { children: React.ReactNode }) {
       <div className="mt-1 rounded-full bg-secondary p-2">
         <Icons.logo className=" size-5" />
       </div>
-      <div>{children}</div>
+      {children}
     </div>
   );
 }
