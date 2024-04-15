@@ -19,6 +19,7 @@ export function SuggestionCard({
   text: string;
 }) {
   const form = useFormContext<StepsFormData>();
+
   return (
     <div className="flex flex-col rounded-xl bg-white p-4 text-start ">
       <ReactMarkdown className="prose ">{text}</ReactMarkdown>

@@ -65,8 +65,32 @@ function createSystemPrompt({
         You are right now the hook generation step, your goal is to generate some coherant catchy hooks that would stop the users from scrolling.
         your hook will be spoken by an AI voice in the video. so make sure it is catchy and interesting.
         it is IMPORTANT for correct parsing that the format of your suggestions is as follows:
-        <<suggestion:here you put the markdown of your suggestion>>`;
+        <<suggestion:here you put the markdown of your suggestion>>
+        Do not add quotes in your suggestions, only the text.
+        `;
     }
+    case "script": {
+      if (!data.subject || !data.story || !data.hook)
+        throw new Error("subject and story and hook are required");
+      return `You are part of a process that automatically generates tiktok videos.
+        The user will first decide on a subject summary, where we'd have a summary explanation of what the video will be about
+        then after that there are 4 steps to follow.
+        first step is to have a story made out of that subject summary.
+        second step is to have a hook to make user stop scrolling.
+        third step is have the script that an audio AI will read.
+        fourth step is to have a list of images that will be used every 4 seconds in the video while the audio is playing.
+        the user has chosen the subject summary and here is its description: ${data.subject} 
+        and they have chose the following story: ${data.story}
+        and they have chose the following hook: ${data.hook}
+        You are right now the script generation step, your goal is to generate a 1 minute reading script from the information you have.
+        include the hook in your generation.
+        your script will be spoken by an AI voice in the video. Make sure there is enough to say for a 1 minute video.
+        it is IMPORTANT for correct parsing that the format of your suggestions is as follows:
+        <<suggestion:here you put the markdown of your suggestion>>
+        Do not add quotes in your suggestions, only the text.
+        `;
+    }
+
     default:
       return "You are part of a process that automatically generates tiktok videos.";
   }

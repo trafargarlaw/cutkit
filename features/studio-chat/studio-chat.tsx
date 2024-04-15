@@ -64,11 +64,10 @@ export function StudioChat() {
 
     const tab = form.watch("selectedTab");
 
-    return content.replace(/<<suggestion:(.*?)>>/gs, (_, suggestionContent) => {
-      return `<Suggestion text="${suggestionContent}" tab="${tab}" />`;
+    return content.replace(/<<suggestion:(.*?)>>/gs, (_, sug: string) => {
+      return `<Suggestion coucou="coucou" text="${sug.replace(`"`, "")}" tab="${tab}" />`;
     });
   };
-  console.log(messages);
 
   return (
     <div className="flex h-full flex-col gap-4">
