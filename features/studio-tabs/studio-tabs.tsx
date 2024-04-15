@@ -10,6 +10,7 @@ import {
 import SubjectTab from "./components/subject-tab";
 import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import StoryTab from "./components/story-tab";
+import HookTab from "./components/hook-tab";
 
 export function StudioTabs() {
   const { watch, setValue } = useFormContext<StepsFormData>();
@@ -35,7 +36,7 @@ export function StudioTabs() {
           <Icons.audio className="mr-2 size-4" />
           Script
         </TabsTrigger>
-        <TabsTrigger value="images" disabled={!watch("hook")}>
+        <TabsTrigger value="images" disabled={!watch("script")}>
           <Icons.images className="mr-2 size-4" />
           Images
         </TabsTrigger>
@@ -46,7 +47,9 @@ export function StudioTabs() {
       <TabsContent value="story">
         <StoryTab />
       </TabsContent>
-      <TabsContent value="hook"> hook</TabsContent>
+      <TabsContent value="hook">
+        <HookTab />
+      </TabsContent>
       <TabsContent value="script"> script</TabsContent>
       <TabsContent value="images"> images</TabsContent>
     </Tabs>

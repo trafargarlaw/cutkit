@@ -1,11 +1,21 @@
 import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useChat } from "ai/react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 function StoryTab() {
-  const { register, watch, setValue } = useFormContext<StepsFormData>();
+  const { register, watch, setValue, getValues } =
+    useFormContext<StepsFormData>();
+
+  const { append } = useChat({
+    id: "hook",
+    api: "/api/hook/chat",
+    body: {
+      data: getValues(),
+    },
+  });
 
   const [isEditing, setIsEditing] = useState(() =>
     !watch("story") ? true : false,
@@ -15,8 +25,14 @@ function StoryTab() {
     setIsEditing((prev) => !prev);
   }
 
-  function handleConfirm() {
-    setValue("selectedTab", "story");
+  async function handleConfirm() {
+    setValue("selectedTab", "hook");
+    await append({
+      id: "1",
+      content:
+        "Generate a first set of hooks to make the viewer stop scrolling.",
+      role: "user",
+    });
   }
 
   return (
