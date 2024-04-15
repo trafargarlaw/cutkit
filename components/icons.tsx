@@ -2,10 +2,12 @@ import {
   ArrowUp,
   AudioLines,
   ChevronDown,
+  ChevronsUpDown,
   Ellipsis,
   Images,
   Lightbulb,
   LoaderCircle,
+  Pause,
   Play,
   Scroll,
   User,
@@ -60,6 +62,7 @@ export const Icons = {
   ellipsis: Ellipsis,
   lightBulb: Lightbulb,
   scroll: Scroll,
+  chevronsUpDown: ChevronsUpDown,
   hook: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
       <path
@@ -76,4 +79,5 @@ export const Icons = {
   user: User,
   play: Play,
   chevronDown: ChevronDown,
+  pause: Pause,
 };

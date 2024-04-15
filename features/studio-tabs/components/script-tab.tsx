@@ -1,80 +1,115 @@
 import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
-import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import AudioPreview from "./audio-preview";
 
 function ScriptTab() {
-  const { register, watch, setValue } = useFormContext<StepsFormData>();
-  const [isEditing, setIsEditing] = useState(false);
+  const { register, watch, setValue, getValues } =
+    useFormContext<StepsFormData>();
 
-  useEffect(() => {
-    // I don't know exactly how this tab works;
-    // I'im going to assume that the script is IA generated at this step & editing is false by default
-    setValue(
-      "script",
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    );
-  }, [setValue]);
+  const {
+    isPending,
+    error,
+    data: voices,
+  } = useQuery<{
+    voices: Voice[];
+  }>({
+    queryKey: ["voices"],
+    queryFn: () =>
+      fetch("https://api.elevenlabs.io/v1/voices").then((res) => res.json()),
+  });
+
+  // const { append } = useChat({
+  //   id: "script",
+  //   api: "/api/script/chat",
+  //   body: {
+  //     data: getValues(),
+  //   },
+  // });
+  console.log("voices", voices);
+
+  const [isEditing, setIsEditing] = useState(() =>
+    !watch("script") ? true : false,
+  );
 
   function toggleEditing() {
     setIsEditing((prev) => !prev);
   }
 
-  function handleConfirm() {
+  async function handleConfirm() {
     setValue("selectedTab", "images");
+    // await append({
+    //   id: "1",
+    //   content: "Generate a first script draft with the given info.",
+    //   role: "user",
+    // });
   }
-
   return (
     <div className="rounded-xl bg-secondary p-4 text-secondary-foreground/80">
+      <h1 className="font-semibold">
+        Let’s generate the script and listen to it!
+      </h1>
       {isEditing ? (
         <Textarea
-          className="animate-fade-in-out mt-4 rounded-xl border-white/40 bg-transparent"
-          value="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+          className="mt-4 rounded-xl border-white/40 bg-transparent"
+          placeholder="Write your catchy hook or use a generated one"
           {...register("script")}
         />
       ) : (
-        <div className="animate-fade-in-out mt-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit
-        </div>
+        <div className="mt-4">{watch("script")}</div>
       )}
 
-      <div className="mt-4 grid grid-cols-3 items-center gap-x-2">
+      <div className="mt-4 flex items-center justify-between gap-x-2">
         <span className="font-bold">Voice over</span>
 
-        {/* Maybe use combo-box instead of dropdown-menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-x-4 rounded-full border border-gray-100 p-1.5 px-1">
-            Default
-            <Icons.chevronDown className="size-4 text-primary-foreground" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>Default ✓</DropdownMenuItem>
-            <DropdownMenuItem>John Doe</DropdownMenuItem>
-            <DropdownMenuItem>Record</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        {/**/}
-
-        <Button size="lg" variant="outline">
-          Clown my own voice
-        </Button>
-      </div>
-
-      <div className="mt-4 flex justify-between">
-        <Icons.play className="size-6 fill-primary-foreground" />
-        <div className="text-secondary-foreground/50">waveform</div>
+        <Select>
+          <SelectTrigger className="w-44 rounded-full">
+            <SelectValue placeholder="Choose voice" />
+          </SelectTrigger>
+          <SelectContent className="max-h-96 w-60 overflow-y-auto rounded-lg border-white/50 bg-secondary text-secondary-foreground ">
+            {voices?.voices.map((voice) => (
+              <SelectItem
+                value={voice.voice_id}
+                key={voice.voice_id}
+                className="group"
+              >
+                <div className="flex items-center gap-2">
+                  <div>
+                    <AudioPreview voice={voice} />
+                    <Image
+                      src={`https://avatar.vercel.sh/${voice.name}`}
+                      className="rounded-full group-hover:hidden group-focus:hidden"
+                      alt={voice.name}
+                      width={24}
+                      height={24}
+                    />
+                  </div>
+                  <span>{voice.name}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="mt-4 flex items-center justify-end gap-2">
-        <Button size="sm" variant="outline" onClick={toggleEditing}>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={toggleEditing}
+          disabled={!watch("script")}
+        >
           {isEditing ? "Save" : "Edit"}
         </Button>
         <Button
@@ -83,7 +118,7 @@ function ScriptTab() {
           disabled={!watch("script")}
           onClick={handleConfirm}
         >
-          Confirm
+          Generate Audio
         </Button>
       </div>
     </div>

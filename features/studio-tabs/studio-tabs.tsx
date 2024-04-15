@@ -11,6 +11,7 @@ import {
 import HookTab from "./components/hook-tab";
 import StoryTab from "./components/story-tab";
 import SubjectTab from "./components/subject-tab";
+import ScriptTab from "./components/script-tab";
 
 export function StudioTabs() {
   const { watch, setValue } = useFormContext<StepsFormData>();
@@ -50,7 +51,9 @@ export function StudioTabs() {
       <TabsContent value="hook">
         <HookTab />
       </TabsContent>
-      <TabsContent value="script"> script</TabsContent>
+      <TabsContent value="script">
+        <ScriptTab />
+      </TabsContent>
       <TabsContent value="images"> images</TabsContent>
     </Tabs>
   );
