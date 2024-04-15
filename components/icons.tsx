@@ -1,15 +1,18 @@
 import {
-  type LucideProps,
-  type LucideIcon,
-  LoaderCircle,
-  SquarePlay,
-  Ellipsis,
-  Lightbulb,
-  Scroll,
-  AudioLines,
-  Images,
   ArrowUp,
+  AudioLines,
+  ChevronDown,
+  ChevronsUpDown,
+  Ellipsis,
+  Images,
+  Lightbulb,
+  LoaderCircle,
+  Pause,
+  Play,
+  Scroll,
   User,
+  type LucideIcon,
+  type LucideProps,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -59,6 +62,7 @@ export const Icons = {
   ellipsis: Ellipsis,
   lightBulb: Lightbulb,
   scroll: Scroll,
+  chevronsUpDown: ChevronsUpDown,
   hook: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
       <path
@@ -73,4 +77,7 @@ export const Icons = {
   audio: AudioLines,
   images: Images,
   user: User,
+  play: Play,
+  chevronDown: ChevronDown,
+  pause: Pause,
 };

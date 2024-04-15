@@ -5,6 +5,14 @@
 await import("./env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: "avatar.vercel.sh",
+      },
+    ],
+  },
+};
 
 export default config;

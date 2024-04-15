@@ -38,7 +38,13 @@ function getInitialMessagesFromTab(tab: string) {
         },
       ] satisfies Message[];
     case "script":
-      return undefined;
+      return [
+        {
+          id: "1",
+          content: "Let's write the script of your video!",
+          role: "assistant",
+        },
+      ] satisfies Message[];
     case "images":
       return undefined;
     default:
@@ -64,11 +70,10 @@ export function StudioChat() {
 
     const tab = form.watch("selectedTab");
 
-    return content.replace(/<<suggestion:(.*?)>>/gs, (_, suggestionContent) => {
-      return `<Suggestion text="${suggestionContent}" tab="${tab}" />`;
+    return content.replace(/<<suggestion:(.*?)>>/gs, (_, sug: string) => {
+      return `<Suggestion coucou="coucou" text="${sug.replace(`"`, "")}" tab="${tab}" />`;
     });
   };
-  console.log(messages);
 
   return (
     <div className="flex h-full flex-col gap-4">
