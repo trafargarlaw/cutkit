@@ -29,6 +29,7 @@
     "ai": "^3.0.22",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "elevenlabs": "^0.2.2",
     "lucide-react": "^0.367.0",
     "markdown-to-jsx": "^7.4.7",
     "nanoid": "^5.0.7",

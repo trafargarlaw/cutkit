@@ -26,6 +26,10 @@ export function SuggestionCard({
       <Button
         className="ml-auto mt-2 border-primary text-primary/90"
         onClick={() => {
+          if (tab === "script") {
+            form.setValue("script.text", text);
+            return;
+          }
           form.setValue(tab, text);
         }}
         variant="outline"

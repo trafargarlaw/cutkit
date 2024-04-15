@@ -38,7 +38,13 @@ function getInitialMessagesFromTab(tab: string) {
         },
       ] satisfies Message[];
     case "script":
-      return undefined;
+      return [
+        {
+          id: "1",
+          content: "Let's write the script of your video!",
+          role: "assistant",
+        },
+      ] satisfies Message[];
     case "images":
       return undefined;
     default:
