@@ -106,7 +106,7 @@ function ScriptTab() {
             <SelectContent className="max-h-96 w-60 overflow-y-auto rounded-lg border-white/50 bg-secondary text-secondary-foreground ">
               {voices?.voices.map((voice) => (
                 <SelectItem
-                  value={voice.name}
+                  value={voice.voice_id}
                   key={voice.voice_id}
                   className="group"
                 >
