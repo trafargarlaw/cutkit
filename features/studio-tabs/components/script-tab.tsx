@@ -82,7 +82,7 @@ function ScriptTab() {
 
   return (
     <div className="grid gap-4">
-      <div className="rounded-xl bg-secondary p-4 text-secondary-foreground/80">
+      <div className="h-full rounded-xl bg-secondary p-4 text-secondary-foreground/70">
         <h1 className="font-semibold">
           Let’s generate the script and listen to it!
         </h1>

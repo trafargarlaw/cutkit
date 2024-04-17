@@ -36,7 +36,7 @@ function StoryTab() {
   }
 
   return (
-    <div className="rounded-xl bg-secondary p-4 text-secondary-foreground/70">
+    <div className="h-full rounded-xl bg-secondary p-4 text-secondary-foreground/70">
       <h1 className="font-semibold">Now let’s work on the story!</h1>
       {isEditing ? (
         <Textarea

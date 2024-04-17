@@ -34,7 +34,7 @@ function SubjectTab() {
   }
 
   return (
-    <div className="rounded-xl bg-secondary p-4 text-secondary-foreground/70">
+    <div className="h-full rounded-xl bg-secondary p-4 text-secondary-foreground/70">
       <h1 className="font-semibold">What&apos;s your video about?</h1>
       {isEditing ? (
         <Textarea

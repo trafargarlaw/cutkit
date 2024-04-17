@@ -35,7 +35,7 @@ function HookTab() {
   }
 
   return (
-    <div className="rounded-xl bg-secondary p-4 text-secondary-foreground/70">
+    <div className="h-full rounded-xl bg-secondary p-4 text-secondary-foreground/70">
       <h1 className="font-semibold">Let’s create a catchy hook!</h1>
       {isEditing ? (
         <Textarea
