@@ -1,4 +1,4 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {
   getServerSession,
   type DefaultSession,
@@ -7,9 +7,9 @@ import {
 import { type Adapter } from "next-auth/adapters";
 import EmailProvider from "next-auth/providers/email";
 
-import { db } from "@/server/db";
 import { env } from "@/env";
 import { sendVerificationRequest } from "@/lib/send-verification-request";
+import { db } from "@/server/db/index";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  adapter: PrismaAdapter(db) as Adapter,
+  adapter: DrizzleAdapter(db) as Adapter,
   providers: [
     EmailProvider({
       server: {
