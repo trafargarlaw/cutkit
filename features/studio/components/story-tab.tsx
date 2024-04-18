@@ -1,11 +1,11 @@
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useChat } from "ai/react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import type { StepsFormData } from "../studio";
 
-function StoryTab() {
+export function StoryTab() {
   const { register, watch, setValue, getValues } =
     useFormContext<StepsFormData>();
 
@@ -68,5 +68,3 @@ function StoryTab() {
     </div>
   );
 }
-
-export default StoryTab;

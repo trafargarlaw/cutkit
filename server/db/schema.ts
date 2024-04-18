@@ -109,6 +109,7 @@ export const video = createTable(
     story: text("story"),
     hook: text("hook"),
     script: text("script"),
+    voice: varchar("voice", { length: 255 }),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -145,3 +146,10 @@ export const image = createTable(
     videoIdIdx: index("image_videoId_idx").on(image.videoId),
   }),
 );
+
+export type User = typeof users.$inferSelect;
+export type Account = typeof accounts.$inferSelect;
+export type Session = typeof sessions.$inferSelect;
+export type VerificationToken = typeof verificationTokens.$inferSelect;
+export type Video = typeof video.$inferSelect;
+export type Audio = typeof audio.$inferSelect;

@@ -37,7 +37,10 @@ function DashboardPage() {
         {isSuccess &&
           videos?.map((video) => (
             <Card key={video.id} className="relative">
-              <Link className="absolute inset-0 z-10" href="#">
+              <Link
+                className="absolute inset-0 z-10"
+                href={`/studio/${video.id}`}
+              >
                 <span className="sr-only">View video</span>
               </Link>
 

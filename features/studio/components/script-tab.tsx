@@ -1,4 +1,3 @@
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -12,10 +11,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import AudioPreview from "./audio-preview";
 import LoadingDots from "@/components/ui/loading-dots";
+import { AudioPreview } from "./audio-preview";
+import type { StepsFormData } from "../studio";
 
-function ScriptTab() {
+export function ScriptTab() {
   const { register, watch, setValue } = useFormContext<StepsFormData>();
 
   const { data: voices } = useQuery<{
@@ -170,5 +170,3 @@ function ScriptTab() {
     </div>
   );
 }
-
-export default ScriptTab;

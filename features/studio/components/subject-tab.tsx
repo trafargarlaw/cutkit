@@ -1,11 +1,11 @@
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useChat } from "ai/react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import type { StepsFormData } from "../studio";
 
-function SubjectTab() {
+export function SubjectTab() {
   const { register, watch, setValue, getValues } =
     useFormContext<StepsFormData>();
   const { append } = useChat({
@@ -66,5 +66,3 @@ function SubjectTab() {
     </div>
   );
 }
-
-export default SubjectTab;

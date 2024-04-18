@@ -14,4 +14,5 @@ export const stepsValidationSchema = z.object({
   }),
   images: z.array(z.string()).min(1, "Please provide at least one image"),
   selectedTab: z.string().default("subject"),
+  title: z.string().default("Untitled"),
 });

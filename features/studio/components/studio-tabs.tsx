@@ -1,17 +1,17 @@
 "use client";
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { useFormContext } from "react-hook-form";
-import { Icons } from "../../components/icons";
+import { Icons } from "../../../components/icons";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../../components/ui/tabs";
-import HookTab from "./components/hook-tab";
-import StoryTab from "./components/story-tab";
-import SubjectTab from "./components/subject-tab";
-import ScriptTab from "./components/script-tab";
+} from "../../../components/ui/tabs";
+import type { StepsFormData } from "../studio";
+import { SubjectTab } from "./subject-tab";
+import { StoryTab } from "./story-tab";
+import { HookTab } from "./hook-tab";
+import { ScriptTab } from "./script-tab";
 
 export function StudioTabs() {
   const { watch, setValue } = useFormContext<StepsFormData>();

@@ -1,6 +1,7 @@
 import {
   ArrowUp,
   AudioLines,
+  Check,
   ChevronDown,
   ChevronsUpDown,
   Ellipsis,
@@ -37,6 +38,7 @@ export const Icons = {
       />
     </svg>
   ),
+  check: Check,
   spinner: LoaderCircle,
   arrowUp: ArrowUp,
   squarePlay: (props: LucideProps) => (

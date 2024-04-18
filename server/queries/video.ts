@@ -2,8 +2,9 @@
 import "server-only";
 
 import { db } from "../db";
-import { video } from "../db/schema";
+import { type Video, video } from "../db/schema";
 import { getServerAuthSession } from "../auth";
+import { eq } from "drizzle-orm";
 
 export async function createVideo() {
   try {
@@ -20,6 +21,7 @@ export async function createVideo() {
     });
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
@@ -40,5 +42,44 @@ export async function getVideos() {
     return videos;
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+}
+
+export async function getVideo(videoId: string) {
+  try {
+    const session = await getServerAuthSession();
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    const userId = session.user.id;
+
+    const video = await db.query.video.findFirst({
+      where: (model, { eq }) =>
+        eq(model.id, videoId) && eq(model.userId, userId),
+    });
+
+    return video;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function updateVideo(videoId: string, data: Partial<Video>) {
+  try {
+    const session = await getServerAuthSession();
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+    await db.update(video).set(data).where(eq(video.id, videoId));
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 }

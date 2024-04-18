@@ -1,11 +1,11 @@
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useChat } from "ai/react";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import type { StepsFormData } from "../studio";
 
-function HookTab() {
+export function HookTab() {
   const { register, watch, setValue, getValues } =
     useFormContext<StepsFormData>();
 
@@ -67,5 +67,3 @@ function HookTab() {
     </div>
   );
 }
-
-export default HookTab;

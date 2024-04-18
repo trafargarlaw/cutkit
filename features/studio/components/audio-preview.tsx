@@ -1,7 +1,7 @@
 import { Icons } from "@/components/icons";
 import React, { useRef, useState } from "react";
 
-function AudioPreview({ voice }: { voice: Voice }) {
+export function AudioPreview({ voice }: { voice: Voice }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -39,5 +39,3 @@ function AudioPreview({ voice }: { voice: Voice }) {
     </button>
   );
 }
-
-export default AudioPreview;
