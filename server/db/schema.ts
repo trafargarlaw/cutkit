@@ -6,6 +6,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
@@ -92,5 +93,55 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
+  }),
+);
+
+export const video = createTable(
+  "video",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    title: text("title").default("Untitled"),
+    thumbnail: text("thumbnail"),
+    userId: varchar("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    subject: text("subject"),
+    story: text("story"),
+    hook: text("hook"),
+    script: text("script"),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (video) => ({
+    userIdIdx: index("video_userId_idx").on(video.userId),
+  }),
+);
+
+export const audio = createTable(
+  "audio",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    videoId: uuid("videoId")
+      .notNull()
+      .references(() => video.id),
+    url: text("url"),
+  },
+  (audio) => ({
+    videoIdIdx: index("audio_videoId_idx").on(audio.videoId),
+  }),
+);
+
+export const image = createTable(
+  "image",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    videoId: uuid("videoId")
+      .notNull()
+      .references(() => video.id),
+    url: text("url"),
+  },
+  (image) => ({
+    videoIdIdx: index("image_videoId_idx").on(image.videoId),
   }),
 );
