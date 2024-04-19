@@ -9,20 +9,18 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useVideoMutation } from "@/lib/hook/mutations/use-video-mutation";
+import { useUploadThing } from "@/lib/hook/use-uploadthing";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useChat } from "ai/react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 import type { StepsFormData } from "../studio";
 import { AudioPreview } from "./audio-preview";
-import { useUploadThing } from "@/lib/hook/use-uploadthing";
-import { useParams } from "next/navigation";
-import { toast } from "sonner";
 
 export function ScriptTab() {
-  const { register, watch, setValue, getValues } =
-    useFormContext<StepsFormData>();
+  const { register, watch, setValue } = useFormContext<StepsFormData>();
 
   const params = useParams<{ videoId: string }>();
 
@@ -34,7 +32,7 @@ export function ScriptTab() {
       fetch("https://api.elevenlabs.io/v1/voices").then((res) => res.json()),
   });
 
-  const { startUpload, permittedFileInfo } = useUploadThing("audioUploader");
+  const { startUpload } = useUploadThing("audioUploader");
 
   const {
     data: generatedAudio,
@@ -69,14 +67,6 @@ export function ScriptTab() {
   });
 
   const { mutateAsync: mutateVideoAsync } = useVideoMutation();
-
-  const { append, setMessages } = useChat({
-    id: "script",
-    api: "/api/script/chat",
-    body: {
-      data: getValues("script.text"),
-    },
-  });
 
   const [isEditing, setIsEditing] = useState(() =>
     !watch("script.text") ? true : false,
