@@ -1,20 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useVideoMutation } from "@/lib/hook/mutations/use-video-mutation";
+import { getVideo } from "@/server/queries/video";
 import { useChat } from "ai/react";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 import type { StepsFormData } from "../studio";
+import { getInitialMessagesFromTab } from "./studio-chat";
 
 export function SubjectTab() {
+  const router = useRouter();
+  const params = useParams<{ videoId: string }>();
   const { register, watch, setValue, getValues } =
     useFormContext<StepsFormData>();
-  const { append } = useChat({
+  const { append, setMessages } = useChat({
     id: "story",
     api: "/api/story/chat",
     body: {
       data: getValues(),
     },
   });
+
+  const { mutateAsync } = useVideoMutation();
 
   const [isEditing, setIsEditing] = useState(() =>
     !watch("subject") ? true : false,
@@ -25,12 +34,36 @@ export function SubjectTab() {
   }
 
   async function handleConfirm() {
-    setValue("selectedTab", "story");
-    await append({
-      id: "1",
-      content: "Generate a first story draft with our chosen subject.",
-      role: "user",
-    });
+    const video = await getVideo(params.videoId);
+
+    if (!video) {
+      toast.error("Video not found");
+      router.push("/studio");
+      return;
+    }
+
+    try {
+      if (video.subject === watch("subject")) {
+        setValue("selectedTab", "story");
+        return;
+      }
+      await mutateAsync({
+        videoId: params.videoId,
+        data: {
+          subject: watch("subject"),
+        },
+      });
+      toast.success("Subject updated successfully!");
+      setValue("selectedTab", "story");
+      setMessages(getInitialMessagesFromTab("story"));
+      await append({
+        id: "2",
+        content: "Generate a first story draft with our chosen subject.",
+        role: "user",
+      });
+    } catch {
+      toast.error("Failed to update subject");
+    }
   }
 
   return (

@@ -54,11 +54,11 @@ export async function getVideo(videoId: string) {
       throw new Error("Unauthorized");
     }
 
-    const userId = session.user.id;
-
     const video = await db.query.video.findFirst({
-      where: (model, { eq }) =>
-        eq(model.id, videoId) && eq(model.userId, userId),
+      where: (model, { eq }) => eq(model.id, videoId),
+      with: {
+        audio: true,
+      },
     });
 
     return video;

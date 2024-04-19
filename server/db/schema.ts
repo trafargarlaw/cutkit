@@ -125,13 +125,19 @@ export const audio = createTable(
     id: uuid("id").notNull().primaryKey().defaultRandom(),
     videoId: uuid("videoId")
       .notNull()
-      .references(() => video.id),
+      .references(() => video.id)
+      .unique(),
     url: text("url"),
+    voice: varchar("voice", { length: 255 }),
   },
   (audio) => ({
     videoIdIdx: index("audio_videoId_idx").on(audio.videoId),
   }),
 );
+
+export const videoRelations = relations(video, ({ one }) => ({
+  audio: one(audio, { fields: [video.id], references: [audio.videoId] }),
+}));
 
 export const image = createTable(
   "image",
@@ -151,5 +157,7 @@ export type User = typeof users.$inferSelect;
 export type Account = typeof accounts.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
 export type VerificationToken = typeof verificationTokens.$inferSelect;
-export type Video = typeof video.$inferSelect;
+export type Video = typeof video.$inferSelect & {
+  audio: Audio;
+};
 export type Audio = typeof audio.$inferSelect;

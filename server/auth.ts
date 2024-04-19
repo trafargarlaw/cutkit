@@ -10,7 +10,6 @@ import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env";
 import { sendVerificationRequest } from "@/lib/send-verification-request";
 import { db } from "@/server/db/index";
-import { users } from "./db/schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -46,7 +45,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async session({ token, session }) {
+    async session({ token, session, user }) {
       if (token) {
         session.user.id = token.id;
         session.user.name = token.name;
@@ -57,8 +56,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async jwt({ token, user }) {
-      console.log("user bro", user);
-
       const dbUser = await db.query.users.findFirst({
         where: (model, { eq }) => eq(model.email, token.email!),
       });

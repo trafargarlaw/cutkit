@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { StepsFormData } from "../studio";
+import type { StepsFormData } from "../studio";
 
 export function ImagesTab() {
   const { register, watch, setValue } = useFormContext<StepsFormData>();
@@ -9,7 +9,7 @@ export function ImagesTab() {
   // first we generate the images and showthem in the bottom with first one selected
   //
 
-  return <div className="grid gap-4"></div>;
+  return <div>images tab</div>;
 }
 
 export default ImagesTab;

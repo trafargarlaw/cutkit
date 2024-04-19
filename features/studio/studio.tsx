@@ -7,17 +7,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { useVideoMutation } from "@/lib/hook/mutations/use-video-mutation";
 import { stepsValidationSchema } from "@/lib/validation/steps";
+import type { Video } from "@/server/db/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
 import type { z } from "zod";
 import { StudioTabs } from "./components";
 import { StudioChat } from "./components/studio-chat";
-import type { Video } from "@/server/db/schema";
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { updateVideo } from "@/server/queries/video";
-import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export type StepsFormData = z.infer<typeof stepsValidationSchema>;
 export type StepsFormType = UseFormReturn<FormData>;
@@ -33,22 +33,14 @@ export function Studio({ video }: { video: Video }) {
       subject: video.subject ?? undefined,
       script: {
         text: video.script ?? undefined,
-        voice: video.voice ?? undefined,
+        voice: video.audio?.voice ?? undefined,
       },
       title: video.title ?? "Untitled",
+      audioUrl: video.audio?.url ?? undefined,
     },
   });
 
-  const { mutateAsync } = useMutation({
-    mutationKey: ["updateVideo"],
-    mutationFn: async ({
-      videoId,
-      data,
-    }: {
-      videoId: string;
-      data: Partial<Video>;
-    }) => await updateVideo(videoId, data),
-  });
+  const { mutateAsync } = useVideoMutation();
 
   async function handleTitleChange(e: React.FormEvent) {
     e.preventDefault();
@@ -69,7 +61,15 @@ export function Studio({ video }: { video: Video }) {
 
   return (
     <FormProvider {...methods}>
-      <main className="grid h-full grid-cols-2 gap-4 overflow-y-auto p-4">
+      <main
+        className={cn(
+          {
+            "grid-cols-1": methods.watch("selectedTab") === "images",
+            "grid-cols-2": methods.watch("selectedTab") !== "images",
+          },
+          "grid h-full gap-4 overflow-y-auto p-4",
+        )}
+      >
         <div className="rounded-xl bg-white p-4">
           <div className="flex items-center gap-2 font-semibold">
             <Icons.squarePlay className="size-8 text-primary" />
@@ -119,9 +119,11 @@ export function Studio({ video }: { video: Video }) {
             <StudioTabs />
           </div>
         </div>
-        <div className="overflow-y-auto rounded-xl bg-white p-4">
-          <StudioChat />
-        </div>
+        {methods.watch("selectedTab") !== "images" && (
+          <div className="overflow-y-auto rounded-xl bg-white p-4">
+            <StudioChat />
+          </div>
+        )}
       </main>
     </FormProvider>
   );

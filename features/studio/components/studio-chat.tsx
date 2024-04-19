@@ -11,7 +11,7 @@ import type { StepsFormData } from "../studio";
 import { BotMessage, UserMessage } from "./message";
 import { SuggestionCard } from "./suggestion-card";
 
-function getInitialMessagesFromTab(tab: string) {
+export function getInitialMessagesFromTab(tab: string) {
   switch (tab) {
     case "subject":
       return [
@@ -47,9 +47,9 @@ function getInitialMessagesFromTab(tab: string) {
         },
       ] satisfies Message[];
     case "images":
-      return undefined;
+      return [] satisfies Message[];
     default:
-      return undefined;
+      return [] satisfies Message[];
   }
 }
 

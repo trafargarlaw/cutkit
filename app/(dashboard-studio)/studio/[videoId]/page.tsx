@@ -10,6 +10,7 @@ async function StudioPage({
   };
 }) {
   const video = await getVideo(params.videoId);
+  console.log(video);
 
   if (!video) {
     redirect("/404");

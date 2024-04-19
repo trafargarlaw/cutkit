@@ -1,21 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useVideoMutation } from "@/lib/hook/mutations/use-video-mutation";
+import { getVideo } from "@/server/queries/video";
 import { useChat } from "ai/react";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 import type { StepsFormData } from "../studio";
+import { getInitialMessagesFromTab } from "./studio-chat";
 
 export function StoryTab() {
+  const router = useRouter();
+  const params = useParams<{ videoId: string }>();
+
   const { register, watch, setValue, getValues } =
     useFormContext<StepsFormData>();
 
-  const { append } = useChat({
+  const { append, setMessages } = useChat({
     id: "hook",
     api: "/api/hook/chat",
     body: {
       data: getValues(),
     },
   });
+
+  const { mutateAsync } = useVideoMutation();
 
   const [isEditing, setIsEditing] = useState(() =>
     !watch("story") ? true : false,
@@ -26,13 +36,38 @@ export function StoryTab() {
   }
 
   async function handleConfirm() {
-    setValue("selectedTab", "hook");
-    await append({
-      id: "1",
-      content:
-        "Generate a first set of hooks to make the viewer stop scrolling.",
-      role: "user",
-    });
+    const video = await getVideo(params.videoId);
+
+    if (!video) {
+      toast.error("Video not found");
+      router.push("/studio");
+      return;
+    }
+
+    try {
+      if (video.story === watch("story")) {
+        setValue("selectedTab", "hook");
+
+        return;
+      }
+      await mutateAsync({
+        videoId: params.videoId,
+        data: {
+          story: watch("story"),
+        },
+      });
+      toast.success("Story updated successfully!");
+      setValue("selectedTab", "hook");
+      setMessages(getInitialMessagesFromTab("hook"));
+      await append({
+        id: "2",
+        content:
+          "Generate a first set of hooks to make the viewer stop scrolling.",
+        role: "user",
+      });
+    } catch {
+      toast.error("Failed to update Story");
+    }
   }
 
   return (
