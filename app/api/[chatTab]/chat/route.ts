@@ -1,6 +1,6 @@
-import { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { env } from "@/env";
-import { OpenAIStream, StreamingTextResponse, StreamData } from "ai";
+import type { StepsFormData } from "@/features/studio";
+import { OpenAIStream, StreamingTextResponse } from "ai";
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
