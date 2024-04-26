@@ -8,22 +8,39 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { useVideoMutation } from "@/lib/hook/mutations/use-video-mutation";
+import { cn } from "@/lib/utils";
 import { stepsValidationSchema } from "@/lib/validation/steps";
-import type { Video } from "@/server/db/schema";
+import { getVideo } from "@/server/queries/video";
+import type { InferResultType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { StudioTabs } from "./components";
 import { StudioChat } from "./components/studio-chat";
-import { cn } from "@/lib/utils";
 
 export type StepsFormData = z.infer<typeof stepsValidationSchema>;
 export type StepsFormType = UseFormReturn<FormData>;
 
-export function Studio({ video }: { video: Video }) {
+type VideoWithAudioAndImages = InferResultType<
+  "video",
+  { audio: true; images: true }
+>;
+
+export function Studio({
+  initialVideo,
+}: {
+  initialVideo: VideoWithAudioAndImages;
+}) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const { data: video } = useQuery<VideoWithAudioAndImages>({
+    queryKey: ["video", initialVideo.id],
+    queryFn: async () => getVideo(initialVideo.id),
+    initialData: initialVideo,
+  });
+
   const methods = useForm<StepsFormData>({
     resolver: zodResolver(stepsValidationSchema),
     defaultValues: {
@@ -35,6 +52,7 @@ export function Studio({ video }: { video: Video }) {
         text: video.script ?? undefined,
         voice: video.audio?.voice ?? undefined,
       },
+      images: video.images ?? undefined,
       title: video.title ?? "Untitled",
       audioUrl: video.audio?.url ?? undefined,
     },
@@ -70,7 +88,7 @@ export function Studio({ video }: { video: Video }) {
           "grid h-full gap-4 overflow-y-auto p-4",
         )}
       >
-        <div className="rounded-xl bg-white p-4">
+        <div className="flex flex-col rounded-xl bg-white p-4">
           <div className="flex items-center gap-2 font-semibold">
             <Icons.squarePlay className="size-8 text-primary" />
             <div>
@@ -115,7 +133,7 @@ export function Studio({ video }: { video: Video }) {
               </DropdownMenu>
             )}
           </div>
-          <div className="mt-4">
+          <div className="mt-4 flex h-full flex-col">
             <StudioTabs />
           </div>
         </div>

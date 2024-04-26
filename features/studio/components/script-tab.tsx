@@ -8,9 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useGenerateImageData } from "@/lib/hook/mutations/use-generate-images";
 import { useVideoMutation } from "@/lib/hook/mutations/use-video-mutation";
 import { useUploadThing } from "@/lib/hook/use-uploadthing";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import type { Voice } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -96,7 +98,25 @@ export function ScriptTab() {
     }
   }
 
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: generateImageData, isPending: isImageDataPending } =
+    useGenerateImageData({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["video", params.videoId],
+        });
+      },
+    });
+
   async function handleConfirm() {
+    if (!watch("script.text") || !watch("script.voice")) {
+      return;
+    }
+    await generateImageData({
+      script: watch("script.text"),
+      videoId: params.videoId,
+    });
     setValue("selectedTab", "images");
   }
   return (
@@ -187,8 +207,10 @@ export function ScriptTab() {
               variant="default"
               disabled={!watch("script")}
               onClick={handleConfirm}
+              className="gap-2"
             >
               Confirm
+              {isImageDataPending && <LoadingDots />}
             </Button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { audio } from "@/server/db/schema";
+import { audio, image } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { z } from "zod";
@@ -11,16 +12,19 @@ const f = createUploadthing();
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
   imageUploader: f({ image: { maxFileSize: "16MB" } })
-    // Set permissions and file types for this FileRoute
-    .middleware(async () => {
-      // This code runs on your server before upload
+    .input(
+      z.object({
+        imageId: z.string(),
+      }),
+    )
+    .middleware(async ({ input }) => {
       const session = await getServerAuthSession();
 
       if (!session) throw new UploadThingError("Unauthorized");
 
       const user = session.user;
 
-      return { userId: user.id };
+      return { userId: user.id, imageId: input.imageId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
@@ -28,7 +32,16 @@ export const ourFileRouter = {
 
       console.log("file url", file.url);
 
-      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      try {
+        // update the image record in the database
+        await db
+          .update(image)
+          .set({ url: file.url })
+          .where(eq(image.id, metadata.imageId));
+      } catch {
+        throw new UploadThingError("Database operation failed");
+      }
+
       return { uploadedBy: metadata.userId };
     }),
   audioUploader: f({ audio: { maxFileSize: "32MB" } })

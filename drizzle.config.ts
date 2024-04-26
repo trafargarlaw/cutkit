@@ -10,4 +10,5 @@ export default defineConfig({
   },
   verbose: true,
   strict: true,
+  out: "./server/db",
 }) satisfies Config;

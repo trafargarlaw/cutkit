@@ -22,7 +22,6 @@ export function SubjectTab() {
       data: getValues(),
     },
   });
-
   const { mutateAsync } = useVideoMutation();
 
   const [isEditing, setIsEditing] = useState(() =>

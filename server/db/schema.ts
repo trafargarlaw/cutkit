@@ -125,7 +125,10 @@ export const audio = createTable(
     id: uuid("id").notNull().primaryKey().defaultRandom(),
     videoId: uuid("videoId")
       .notNull()
-      .references(() => video.id)
+      .references(() => video.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      })
       .unique(),
     url: text("url"),
     voice: varchar("voice", { length: 255 }),
@@ -135,8 +138,9 @@ export const audio = createTable(
   }),
 );
 
-export const videoRelations = relations(video, ({ one }) => ({
+export const videoRelations = relations(video, ({ one, many }) => ({
   audio: one(audio, { fields: [video.id], references: [audio.videoId] }),
+  images: many(image),
 }));
 
 export const image = createTable(
@@ -145,19 +149,28 @@ export const image = createTable(
     id: uuid("id").notNull().primaryKey().defaultRandom(),
     videoId: uuid("videoId")
       .notNull()
-      .references(() => video.id),
+      .references(() => video.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     url: text("url"),
+    timestamp: text("timestamp"),
+    prompt: text("prompt"),
+    order: integer("order"),
   },
   (image) => ({
     videoIdIdx: index("image_videoId_idx").on(image.videoId),
   }),
 );
 
+export const imageRelations = relations(image, ({ one }) => ({
+  video: one(video, { fields: [image.videoId], references: [video.id] }),
+}));
+
 export type User = typeof users.$inferSelect;
 export type Account = typeof accounts.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
 export type VerificationToken = typeof verificationTokens.$inferSelect;
-export type Video = typeof video.$inferSelect & {
-  audio: Audio;
-};
+export type Video = typeof video.$inferSelect;
+export type Image = typeof image.$inferSelect;
 export type Audio = typeof audio.$inferSelect;

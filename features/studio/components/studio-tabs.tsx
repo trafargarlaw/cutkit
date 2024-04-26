@@ -21,8 +21,9 @@ export function StudioTabs() {
     <Tabs
       value={watch("selectedTab")}
       onValueChange={(value) => setValue("selectedTab", value)}
+      className="flex h-full flex-col"
     >
-      <TabsList>
+      <TabsList className="self-start">
         <TabsTrigger value="subject">
           <Icons.lightBulb className="mr-2 size-4" />
           Subject
@@ -56,7 +57,7 @@ export function StudioTabs() {
       <TabsContent value="script">
         <ScriptTab />
       </TabsContent>
-      <TabsContent value="images">
+      <TabsContent value="images" className="h-full">
         <ImagesTab />
       </TabsContent>
     </Tabs>

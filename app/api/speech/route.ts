@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const options = {
       method: "POST",
       headers: {
-        "xi-api-key": env.ELEVENLABS_API_KEY,
+        "xi-api-key": "57e0788d41a58ea8d6d5251b5cc9785f",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ text }),

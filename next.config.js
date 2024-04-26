@@ -11,6 +11,12 @@ const config = {
       {
         hostname: "avatar.vercel.sh",
       },
+      {
+        hostname: "picsum.photos",
+      },
+      {
+        hostname: "utfs.io",
+      },
     ],
   },
 };

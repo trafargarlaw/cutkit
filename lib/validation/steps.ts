@@ -12,7 +12,15 @@ export const stepsValidationSchema = z.object({
       .min(1, "Please provide a script or ask AI to generate one"),
     voice: z.string().min(1, "Please provide a voice"),
   }),
-  images: z.array(z.string()).min(1, "Please provide at least one image"),
+  images: z.array(
+    z.object({
+      videoId: z.string(),
+      id: z.string(),
+      url: z.string().nullable(),
+      timestamp: z.string().nullable(),
+      prompt: z.string().nullable(),
+    }),
+  ),
   selectedTab: z.string().default("subject"),
   title: z.string().default("Untitled"),
   audioUrl: z.string().optional(),

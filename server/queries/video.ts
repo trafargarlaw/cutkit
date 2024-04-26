@@ -5,6 +5,7 @@ import { db } from "../db";
 import { type Video, video } from "../db/schema";
 import { getServerAuthSession } from "../auth";
 import { eq } from "drizzle-orm";
+import { InferResultType } from "@/types";
 
 export async function createVideo() {
   try {
@@ -46,7 +47,9 @@ export async function getVideos() {
   }
 }
 
-export async function getVideo(videoId: string) {
+export async function getVideo(
+  videoId: string,
+): Promise<InferResultType<"video", { audio: true; images: true }>> {
   try {
     const session = await getServerAuthSession();
 
@@ -58,10 +61,15 @@ export async function getVideo(videoId: string) {
       where: (model, { eq }) => eq(model.id, videoId),
       with: {
         audio: true,
+        images: {
+          orderBy(image, { asc }) {
+            return asc(image.order);
+          },
+        },
       },
     });
 
-    return video;
+    return video as InferResultType<"video", { audio: true; images: true }>;
   } catch (error) {
     console.error(error);
     throw error;
@@ -82,4 +90,8 @@ export async function updateVideo(videoId: string, data: Partial<Video>) {
     console.error(error);
     throw error;
   }
+}
+
+export async function deleteVideo(videoId: string) {
+  return await db.delete(video).where(eq(video.id, videoId));
 }
