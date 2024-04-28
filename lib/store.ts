@@ -1,39 +1,39 @@
 import { create } from "zustand";
 
 export interface MediaElement {
-  id?: string;
-  type: "image" | "audio" | "text";
+  id: string;
+  type: "image" | "video" | "text";
   startTime: number;
   endTime: number;
   src?: string;
   content?: string;
 }
 
-interface Track {
+export interface Track {
   id: string;
   elements: MediaElement[];
 }
 
 interface TimelineState {
   tracks: Track[];
-  addElement: (trackId: string, element: MediaElement) => void;
-  removeElement: (trackId: string, elementId: string) => void;
+  moveElementWithinTrack: (
+    trackId: string,
+    draggableId: string,
+    oldIndex: number,
+    newIndex: number,
+  ) => void;
+
+  moveElementBetweenTracks: (
+    elementId: string,
+    sourceTrackId: string,
+    destinationTrackId: string,
+    destinationIndex: number,
+  ) => void;
   setElementStartTime: (
     trackId: string,
     elementId: string,
-    startTime: number,
+    newStartTime: number,
   ) => void;
-  setElementEndTime: (
-    trackId: string,
-    elementId: string,
-    endTime: number,
-  ) => void;
-  setElementContent: (
-    trackId: string,
-    elementId: string,
-    content: string,
-  ) => void;
-  setElementSrc: (trackId: string, elementId: string, src: string) => void;
 }
 
 const useTimelineStore = create<TimelineState>((set) => ({
@@ -58,81 +58,119 @@ const useTimelineStore = create<TimelineState>((set) => ({
           id: "element-3",
           startTime: 5,
           endTime: 7,
-          type: "audio",
+          type: "video",
         },
       ],
     },
+    {
+      id: "track-2",
+      elements: [],
+    },
+    {
+      id: "track-3",
+      elements: [],
+    },
+    {
+      id: "track-4",
+      elements: [],
+    },
+    {
+      id: "track-5",
+      elements: [],
+    },
+    {
+      id: "track-6",
+      elements: [],
+    },
+    {
+      id: "track-7",
+      elements: [],
+    },
+    {
+      id: "track-8",
+      elements: [],
+    },
+    {
+      id: "track-9",
+      elements: [],
+    },
   ],
-  addElement: (trackId, element) =>
+
+  moveElementWithinTrack: (
+    trackId: string,
+    draggableId: string,
+    oldIndex: number,
+    newIndex: number,
+  ) =>
     set((state) => ({
-      tracks: state.tracks.map((track) =>
-        track.id === trackId
-          ? { ...track, elements: [...track.elements, element] }
-          : track,
-      ),
+      tracks: state.tracks.map((track) => {
+        if (track.id === trackId) {
+          const newElements = Array.from(track.elements);
+          const [movedElement] = newElements.splice(oldIndex, 1);
+          if (!movedElement) return track;
+          newElements.splice(newIndex, 0, movedElement);
+
+          return { ...track, elements: newElements };
+        }
+        return track;
+      }),
     })),
-  removeElement: (trackId, elementId) =>
+
+  moveElementBetweenTracks: (
+    elementId: string,
+    sourceTrackId: string,
+    destinationTrackId: string,
+    destinationIndex: number,
+  ) =>
+    set((state) => {
+      const sourceTrack = state.tracks.find(
+        (track) => track.id === sourceTrackId,
+      );
+      const destinationTrack = state.tracks.find(
+        (track) => track.id === destinationTrackId,
+      );
+      if (!sourceTrack || !destinationTrack) return { ...state };
+
+      const elementToMove = sourceTrack.elements.find(
+        (element) => element.id === elementId,
+      );
+      if (!elementToMove) return { ...state };
+
+      // Remove element from source track
+      const newSourceElements = sourceTrack.elements.filter(
+        (element) => element.id !== elementId,
+      );
+      // Insert element into destination track
+      const newDestinationElements = [...destinationTrack.elements];
+      newDestinationElements.splice(destinationIndex, 0, elementToMove);
+
+      return {
+        tracks: state.tracks.map((track) => {
+          if (track.id === sourceTrackId) {
+            return { ...track, elements: newSourceElements };
+          } else if (track.id === destinationTrackId) {
+            return { ...track, elements: newDestinationElements };
+          }
+          return track;
+        }),
+      };
+    }),
+  setElementStartTime: (trackId, elementId, newStartTime) =>
     set((state) => ({
-      tracks: state.tracks.map((track) =>
-        track.id === trackId
-          ? {
-              ...track,
-              elements: track.elements.filter((e) => e.id !== elementId),
-            }
-          : track,
-      ),
-    })),
-  setElementContent: (trackId, elementId, content) =>
-    set((state) => ({
-      tracks: state.tracks.map((track) =>
-        track.id === trackId
-          ? {
-              ...track,
-              elements: track.elements.map((e) =>
-                e.id === elementId ? { ...e, content } : e,
-              ),
-            }
-          : track,
-      ),
-    })),
-  setElementEndTime: (trackId, elementId, endTime) =>
-    set((state) => ({
-      tracks: state.tracks.map((track) =>
-        track.id === trackId
-          ? {
-              ...track,
-              elements: track.elements.map((e) =>
-                e.id === elementId ? { ...e, endTime } : e,
-              ),
-            }
-          : track,
-      ),
-    })),
-  setElementSrc: (trackId, elementId, src) =>
-    set((state) => ({
-      tracks: state.tracks.map((track) =>
-        track.id === trackId
-          ? {
-              ...track,
-              elements: track.elements.map((e) =>
-                e.id === elementId ? { ...e, src } : e,
-              ),
-            }
-          : track,
-      ),
-    })),
-  setElementStartTime: (trackId, elementId, startTime) =>
-    set((state) => ({
-      tracks: state.tracks.map((track) =>
-        track.id === trackId
-          ? {
-              ...track,
-              elements: track.elements.map((e) =>
-                e.id === elementId ? { ...e, startTime } : e,
-              ),
-            }
-          : track,
-      ),
+      tracks: state.tracks.map((track) => {
+        if (track.id === trackId) {
+          return {
+            ...track,
+            elements: track.elements.map((element) => {
+              if (element.id === elementId) {
+                return { ...element, startTime: newStartTime };
+              }
+              return element;
+            }),
+          };
+        }
+        return track;
+      }),
     })),
 }));
 

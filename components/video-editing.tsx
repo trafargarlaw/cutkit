@@ -6,13 +6,26 @@ import useTimelineStore from "@/lib/store";
 function VideoEditing() {
   const timelineStore = useTimelineStore();
   return (
-    <div>
+    <div className="overflow-hidden">
       <Timeline>
         {timelineStore.tracks.map((track) => (
-          <Track key={track.id}>
-            {track.elements.map((element) => (
-              <ElementComponent key={element.id} element={element} />
-            ))}
+          <Track key={track.id} trackId={track.id}>
+            {track.elements.map((element, index) => {
+              const previousElementsWidth = track.elements
+                .slice(0, index)
+                .reduce((acc, curr) => {
+                  return acc + (curr.endTime - curr.startTime) * 200;
+                }, 0);
+
+              return (
+                <ElementComponent
+                  key={element.id}
+                  track={track}
+                  element={element}
+                  index={index}
+                />
+              );
+            })}
           </Track>
         ))}
       </Timeline>

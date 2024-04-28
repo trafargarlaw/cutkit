@@ -16,6 +16,7 @@ import {
   Scroll,
   Type,
   User,
+  Video,
   WandSparkles,
   type LucideIcon,
   type LucideProps,
@@ -50,6 +51,7 @@ export const Icons = {
   wandSparkles: WandSparkles,
   check: Check,
   spinner: LoaderCircle,
+  video: Video,
   arrowUp: ArrowUp,
   squarePlay: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
