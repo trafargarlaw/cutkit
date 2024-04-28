@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useGenerateImage } from "@/lib/hook/mutations/use-generate-images";
+import { UploadButton } from "@/lib/uploadthing";
 import { getVideo } from "@/server/queries/video";
 import type { InferResultType } from "@/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,8 +16,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import type { StepsFormData } from "../studio";
-import { useUploadThing } from "@/lib/hook/use-uploadthing";
-import { UploadButton } from "@/lib/uploadthing";
 
 export function ImagesTab() {
   const params = useParams<{ videoId: string }>();

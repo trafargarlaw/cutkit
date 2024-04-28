@@ -5,12 +5,16 @@ import {
   ChevronDown,
   ChevronsUpDown,
   Ellipsis,
+  Grip,
+  GripVertical,
+  Image,
   Images,
   Lightbulb,
   LoaderCircle,
   Pause,
   Play,
   Scroll,
+  Type,
   User,
   WandSparkles,
   type LucideIcon,
@@ -39,6 +43,10 @@ export const Icons = {
       />
     </svg>
   ),
+  grip: GripVertical,
+  image: Image,
+  audio: AudioLines,
+  text: Type,
   wandSparkles: WandSparkles,
   check: Check,
   spinner: LoaderCircle,
@@ -78,7 +86,6 @@ export const Icons = {
       />
     </svg>
   ),
-  audio: AudioLines,
   images: Images,
   user: User,
   play: Play,

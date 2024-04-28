@@ -76,6 +76,11 @@ function DashboardPage() {
                   >
                     Delete video
                   </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={`/studio/editing/${video.id}`}>
+                      Start editing
+                    </Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <CardContent className="space-y-2 pt-4">
