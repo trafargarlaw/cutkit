@@ -13,13 +13,14 @@ import { stepsValidationSchema } from "@/lib/validation/steps";
 import { getVideo } from "@/server/queries/video";
 import type { InferResultType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { StudioTabs } from "./components";
 import { StudioChat } from "./components/studio-chat";
+import { Button } from "@/components/ui/button";
 
 export type StepsFormData = z.infer<typeof stepsValidationSchema>;
 export type StepsFormType = UseFormReturn<FormData>;
@@ -77,6 +78,36 @@ export function Studio({
     }
   }
 
+  const { mutateAsync: transcribeAsync } = useMutation({
+    mutationKey: ["transcribe"],
+    mutationFn: ({
+      audioUrl,
+      videoId,
+    }: {
+      audioUrl: string;
+      videoId: string;
+    }) => {
+      return fetch("/api/transcribe", {
+        method: "POST",
+        body: JSON.stringify({
+          audioUrl,
+          videoId,
+        }),
+      });
+    },
+  });
+
+  async function handleGenerateVideo() {
+    // we will generate subtitles with timestamps
+    const audioUrl = methods.watch("audioUrl");
+    if (!audioUrl) return;
+    const result = transcribeAsync({
+      audioUrl,
+      videoId: video.id,
+    });
+    console.log(result);
+  }
+
   return (
     <FormProvider {...methods}>
       <main
@@ -131,6 +162,12 @@ export function Studio({
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            )}
+            {methods.watch("selectedTab") === "images" && (
+              <Button onClick={handleGenerateVideo} className="ml-auto gap-2">
+                <Icons.wandSparkles className="size-4" />
+                Generate Video
+              </Button>
             )}
           </div>
           <div className="mt-4 flex h-full flex-col">

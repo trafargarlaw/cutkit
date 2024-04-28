@@ -2,8 +2,10 @@ import { relations, sql } from "drizzle-orm";
 import {
   index,
   integer,
+  numeric,
   pgTableCreator,
   primaryKey,
+  real,
   text,
   timestamp,
   uuid,
@@ -141,6 +143,7 @@ export const audio = createTable(
 export const videoRelations = relations(video, ({ one, many }) => ({
   audio: one(audio, { fields: [video.id], references: [audio.videoId] }),
   images: many(image),
+  transcriptions: many(transcription),
 }));
 
 export const image = createTable(
@@ -163,8 +166,34 @@ export const image = createTable(
   }),
 );
 
+export const transcription = createTable(
+  "transcription",
+  {
+    id: uuid("id").notNull().primaryKey().defaultRandom(),
+    videoId: uuid("videoId")
+      .notNull()
+      .references(() => video.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    startTime: real("startTime").notNull(),
+    endTime: real("endTime").notNull(),
+    content: text("content").notNull(),
+  },
+  (transcription) => ({
+    videoIdIdx: index("transcription_videoId_idx").on(transcription.videoId),
+  }),
+);
+
 export const imageRelations = relations(image, ({ one }) => ({
   video: one(video, { fields: [image.videoId], references: [video.id] }),
+}));
+
+export const transcriptionRelations = relations(transcription, ({ one }) => ({
+  video: one(video, {
+    fields: [transcription.videoId],
+    references: [video.id],
+  }),
 }));
 
 export type User = typeof users.$inferSelect;

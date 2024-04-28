@@ -36,7 +36,6 @@ export async function POST(req: NextRequest) {
   )) as string[];
 
   const result = await utapi.uploadFilesFromUrl(output);
-
   await db
     .update(image)
     .set({ url: result[0]?.data?.url, prompt })

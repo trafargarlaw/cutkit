@@ -5,7 +5,7 @@ import { db } from "../db";
 import { type Video, video } from "../db/schema";
 import { getServerAuthSession } from "../auth";
 import { eq } from "drizzle-orm";
-import { InferResultType } from "@/types";
+import type { InferResultType } from "@/types";
 
 export async function createVideo() {
   try {
@@ -66,6 +66,7 @@ export async function getVideo(
             return asc(image.order);
           },
         },
+        transcriptions: true,
       },
     });
 
