@@ -1,5 +1,5 @@
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
+import LoadingDots from "@/components/ui/loading-dots";
 import {
   Select,
   SelectContent,
@@ -8,15 +8,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useGenerateImageData } from "@/lib/hook/mutations/use-generate-images";
+import { useVideoMutation } from "@/lib/hook/mutations/use-video-mutation";
+import { useUploadThing } from "@/lib/hook/use-uploadthing";
+import type { Voice } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import AudioPreview from "./audio-preview";
-import LoadingDots from "@/components/ui/loading-dots";
+import { toast } from "sonner";
+import type { StepsFormData } from "../studio";
+import { AudioPreview } from "./audio-preview";
 
-function ScriptTab() {
+export function ScriptTab() {
   const { register, watch, setValue } = useFormContext<StepsFormData>();
+
+  const params = useParams<{ videoId: string }>();
 
   const { data: voices } = useQuery<{
     voices: Voice[];
@@ -25,6 +33,8 @@ function ScriptTab() {
     queryFn: () =>
       fetch("https://api.elevenlabs.io/v1/voices").then((res) => res.json()),
   });
+
+  const { startUpload } = useUploadThing("audioUploader");
 
   const {
     data: generatedAudio,
@@ -42,44 +52,73 @@ function ScriptTab() {
           text,
           voice,
         }),
-      }).then(async (res) => URL.createObjectURL(await res.blob())),
+      }).then(async (res) => await res.blob()),
+    onSuccess: async (data) => {
+      const file = new File([data], `${watch("title")}.mp3`, {
+        type: "audio/mp3",
+      });
+      console.log("salut a tous c'est asfax?");
+
+      const result = await startUpload([file], {
+        videoId: params.videoId,
+        voice: watch("script.voice"),
+      });
+
+      console.log(result);
+    },
   });
 
-  // const { append } = useChat({
-  //   id: "script",
-  //   api: "/api/script/chat",
-  //   body: {
-  //     data: getValues(),
-  //   },
-  // });
+  const { mutateAsync: mutateVideoAsync } = useVideoMutation();
 
   const [isEditing, setIsEditing] = useState(() =>
-    !watch("script") ? true : false,
+    !watch("script.text") ? true : false,
   );
 
   function toggleEditing() {
     setIsEditing((prev) => !prev);
   }
 
-  async function handleConfirm() {
-    setValue("selectedTab", "images");
-    // await append({
-    //   id: "1",
-    //   content: "Generate a first script draft with the given info.",
-    //   role: "user",
-    // });
-  }
-
   async function handleGenerateAudio() {
     if (!watch("script.text") || !watch("script.voice")) {
       return;
     }
-    await mutateAsync({
-      text: watch("script.text"),
-      voice: watch("script.voice"),
-    });
+    try {
+      await mutateVideoAsync({
+        videoId: params.videoId,
+        data: {
+          script: watch("script.text"),
+        },
+      });
+      await mutateAsync({
+        text: watch("script.text"),
+        voice: watch("script.voice"),
+      });
+    } catch {
+      toast.error("Failed to update Hook");
+    }
   }
 
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: generateImageData, isPending: isImageDataPending } =
+    useGenerateImageData({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["video", params.videoId],
+        });
+      },
+    });
+
+  async function handleConfirm() {
+    if (!watch("script.text") || !watch("script.voice")) {
+      return;
+    }
+    await generateImageData({
+      script: watch("script.text"),
+      videoId: params.videoId,
+    });
+    setValue("selectedTab", "images");
+  }
   return (
     <div className="grid gap-4">
       <div className="h-full rounded-xl bg-secondary p-4 text-secondary-foreground/70">
@@ -99,7 +138,10 @@ function ScriptTab() {
         <div className="mt-4 flex items-center justify-between gap-x-2">
           <span className="font-bold">Voice over</span>
 
-          <Select onValueChange={(value) => setValue("script.voice", value)}>
+          <Select
+            value={watch("script.voice")}
+            onValueChange={(value) => setValue("script.voice", value)}
+          >
             <SelectTrigger className="w-44 rounded-full">
               <SelectValue placeholder="Choose voice" />
             </SelectTrigger>
@@ -150,10 +192,14 @@ function ScriptTab() {
           </Button>
         </div>
       </div>
-      {generatedAudio && (
+      {generatedAudio ? (
         <div className="rounded-xl bg-secondary p-4 text-secondary-foreground/80">
           <div>
-            <audio className="w-full" controls src={generatedAudio} />
+            <audio
+              className="w-full"
+              controls
+              src={URL.createObjectURL(generatedAudio)}
+            />
           </div>
           <div className="mt-4 flex items-center justify-end gap-2">
             <Button
@@ -161,14 +207,34 @@ function ScriptTab() {
               variant="default"
               disabled={!watch("script")}
               onClick={handleConfirm}
+              className="gap-2"
             >
               Confirm
+              {isImageDataPending && <LoadingDots />}
             </Button>
           </div>
         </div>
+      ) : (
+        <>
+          {watch("audioUrl") && (
+            <div className="rounded-xl bg-secondary p-4 text-secondary-foreground/80">
+              <div>
+                <audio className="w-full" controls src={watch("audioUrl")} />
+              </div>
+              <div className="mt-4 flex items-center justify-end gap-2">
+                <Button
+                  size="sm"
+                  variant="default"
+                  disabled={!watch("script")}
+                  onClick={handleConfirm}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
 }
-
-export default ScriptTab;

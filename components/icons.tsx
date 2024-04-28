@@ -1,6 +1,7 @@
 import {
   ArrowUp,
   AudioLines,
+  Check,
   ChevronDown,
   ChevronsUpDown,
   Ellipsis,
@@ -11,6 +12,7 @@ import {
   Play,
   Scroll,
   User,
+  WandSparkles,
   type LucideIcon,
   type LucideProps,
 } from "lucide-react";
@@ -37,6 +39,8 @@ export const Icons = {
       />
     </svg>
   ),
+  wandSparkles: WandSparkles,
+  check: Check,
   spinner: LoaderCircle,
   arrowUp: ArrowUp,
   squarePlay: (props: LucideProps) => (

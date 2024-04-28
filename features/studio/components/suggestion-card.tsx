@@ -1,8 +1,8 @@
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import ReactMarkdown from "react-markdown";
+import type { StepsFormData } from "../studio";
 
 export function SuggestionCard({
   tab,

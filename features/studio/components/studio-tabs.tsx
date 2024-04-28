@@ -1,43 +1,46 @@
 "use client";
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { useFormContext } from "react-hook-form";
-import { Icons } from "../../components/icons";
+import { Icons } from "../../../components/icons";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../../components/ui/tabs";
-import HookTab from "./components/hook-tab";
-import StoryTab from "./components/story-tab";
-import SubjectTab from "./components/subject-tab";
-import ScriptTab from "./components/script-tab";
+} from "../../../components/ui/tabs";
+import type { StepsFormData } from "../studio";
+import { HookTab } from "./hook-tab";
+import ImagesTab from "./image-tab";
+import { ScriptTab } from "./script-tab";
+import { StoryTab } from "./story-tab";
+import { SubjectTab } from "./subject-tab";
 
 export function StudioTabs() {
   const { watch, setValue } = useFormContext<StepsFormData>();
+
   return (
     <Tabs
       value={watch("selectedTab")}
       onValueChange={(value) => setValue("selectedTab", value)}
+      className="flex h-full flex-col"
     >
-      <TabsList>
+      <TabsList className="self-start">
         <TabsTrigger value="subject">
           <Icons.lightBulb className="mr-2 size-4" />
           Subject
         </TabsTrigger>
-        <TabsTrigger value="story" disabled={!watch("subject")}>
+        <TabsTrigger value="story">
           <Icons.scroll className="mr-2 size-4" />
           Story
         </TabsTrigger>
-        <TabsTrigger value="hook" disabled={!watch("story")}>
+        <TabsTrigger value="hook">
           <Icons.hook className="mr-2 size-4" />
           Hook
         </TabsTrigger>
-        <TabsTrigger value="script" disabled={!watch("hook")}>
+        <TabsTrigger value="script">
           <Icons.audio className="mr-2 size-4" />
           Script
         </TabsTrigger>
-        <TabsTrigger value="images" disabled={!watch("script")}>
+        <TabsTrigger value="images">
           <Icons.images className="mr-2 size-4" />
           Images
         </TabsTrigger>
@@ -54,7 +57,9 @@ export function StudioTabs() {
       <TabsContent value="script">
         <ScriptTab />
       </TabsContent>
-      <TabsContent value="images"> images</TabsContent>
+      <TabsContent value="images" className="h-full">
+        <ImagesTab />
+      </TabsContent>
     </Tabs>
   );
 }

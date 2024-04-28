@@ -55,6 +55,25 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
+    async jwt({ token, user }) {
+      const dbUser = await db.query.users.findFirst({
+        where: (model, { eq }) => eq(model.email, token.email!),
+      });
+
+      if (!dbUser) {
+        if (user) {
+          token.id = user?.id;
+        }
+        return token;
+      }
+
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        picture: `https://avatar.vercel.sh/${dbUser.email}`,
+      };
+    },
   },
   adapter: DrizzleAdapter(db) as Adapter,
   providers: [

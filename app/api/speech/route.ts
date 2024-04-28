@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import type { NextRequest } from "next/server";
 
 export const runtime = "edge";
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
     const options = {
       method: "POST",
       headers: {
-        "xi-api-key": "afb4007c8f3485cd1b9289a0f7bd0ebd",
+        "xi-api-key": "57e0788d41a58ea8d6d5251b5cc9785f",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ text }),
@@ -29,6 +30,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create a new ReadableStream to manage the response
+
     const stream = new ReadableStream({
       start(controller) {
         const encoder = new TextEncoder();
@@ -45,11 +47,10 @@ export async function POST(req: NextRequest) {
             .read()
             .then(({ done, value }) => {
               if (done) {
-                console.log("Streaming finished.");
                 controller.close();
                 return;
               }
-              console.log("Streaming data chunk.");
+              console.log("Streaming data chunk.", value);
               controller.enqueue(value);
               push();
             })
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest) {
         push();
       },
     });
+
     return new Response(stream, {
       status: 200,
       headers: {

@@ -1,5 +1,4 @@
 "use client";
-import type { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import type { Message } from "ai";
@@ -8,9 +7,11 @@ import Markdown from "markdown-to-jsx";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
-import { SuggestionCard, BotMessage, UserMessage } from "./components";
+import type { StepsFormData } from "../studio";
+import { BotMessage, UserMessage } from "./message";
+import { SuggestionCard } from "./suggestion-card";
 
-function getInitialMessagesFromTab(tab: string) {
+export function getInitialMessagesFromTab(tab: string) {
   switch (tab) {
     case "subject":
       return [
@@ -46,9 +47,9 @@ function getInitialMessagesFromTab(tab: string) {
         },
       ] satisfies Message[];
     case "images":
-      return undefined;
+      return [] satisfies Message[];
     default:
-      return undefined;
+      return [] satisfies Message[];
   }
 }
 

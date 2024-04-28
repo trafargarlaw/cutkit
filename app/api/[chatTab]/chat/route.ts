@@ -1,6 +1,6 @@
-import { StepsFormData } from "@/app/(dashboard-studio)/studio/page";
 import { env } from "@/env";
-import { OpenAIStream, StreamingTextResponse, StreamData } from "ai";
+import type { StepsFormData } from "@/features/studio";
+import { OpenAIStream, StreamingTextResponse } from "ai";
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { z } from "zod";
@@ -82,9 +82,9 @@ function createSystemPrompt({
         the user has chosen the subject summary and here is its description: ${data.subject} 
         and they have chose the following story: ${data.story}
         and they have chose the following hook: ${data.hook}
-        You are right now the script generation step, your goal is to generate a 1 minute reading script from the information you have.
+        You are right now the script generation step, your goal is to generate a 1 minute reading script from the information you have which is around 130 words.
         include the hook in your generation.
-        your script will be spoken by an AI voice in the video. Make sure there is enough to say for a 1 minute video.
+        your script will be spoken by an AI voice in the video. Make sure there is enough to say for a 1 minute video which is around 130 word.
         it is IMPORTANT for correct parsing that the format of your suggestions is as follows:
         <<suggestion:here you put the markdown of your suggestion>>
         Do not add quotes in your suggestions, only the text.

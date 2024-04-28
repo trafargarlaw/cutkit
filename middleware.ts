@@ -5,8 +5,6 @@ import { NextResponse } from "next/server";
 export default withAuth(
   async function middleware(req) {
     const token = await getToken({ req });
-    console.log("coucou");
-    console.log(token);
 
     const isAuth = !!token;
     const isAuthPage =
