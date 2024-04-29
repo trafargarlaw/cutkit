@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Droppable } from "@hello-pangea/dnd";
 
 export function Track({
@@ -16,9 +17,10 @@ export function Track({
           {...provided.droppableProps}
         >
           {children}
-          {snapshot.isDraggingOver && (
-            <div className="bg-cyan-300">{provided.placeholder}</div>
-          )}
+
+          <div className={snapshot.isDraggingOver ? "bg-blue-200" : ""}>
+            {provided.placeholder}
+          </div>
         </div>
       )}
     </Droppable>

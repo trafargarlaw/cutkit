@@ -10,22 +10,14 @@ function VideoEditing() {
       <Timeline>
         {timelineStore.tracks.map((track) => (
           <Track key={track.id} trackId={track.id}>
-            {track.elements.map((element, index) => {
-              const previousElementsWidth = track.elements
-                .slice(0, index)
-                .reduce((acc, curr) => {
-                  return acc + (curr.endTime - curr.startTime) * 200;
-                }, 0);
-
-              return (
-                <ElementComponent
-                  key={element.id}
-                  track={track}
-                  element={element}
-                  index={index}
-                />
-              );
-            })}
+            {track.elements.map((element, index) => (
+              <ElementComponent
+                key={element.id}
+                track={track}
+                element={element}
+                index={index}
+              />
+            ))}
           </Track>
         ))}
       </Timeline>
